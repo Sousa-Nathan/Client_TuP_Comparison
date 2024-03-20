@@ -7,12 +7,21 @@ from pathlib import Path
 from tkinter import filedialog
 from datetime import datetime
 
-def filename_name_dir(out_dir):
+def filename_name_dir(wb1, wb2, out_dir):
     now = datetime.now()
     date = now.strftime("%Y_%m_%d")
     time = now.strftime("%H_%M_%S")
     
-    comparison_tup_file = os.path.join(out_dir, f"TuP Comparison {date} {time}.xlsx")
+    wb1_dir_split = wb1.split("/")
+    wb2_dir_split = wb2.split("/")
+    
+    wb1_ext_split = wb1_dir_split[-1].split(".")
+    wb2_ext_split = wb2_dir_split[-1].split(".")
+    
+    wb1_version = wb1_ext_split[0][:19]
+    wb2_version = wb2_ext_split[0][:19]
+    
+    comparison_tup_file = os.path.join(out_dir, f"TuP Comparison {wb1_version} v. {wb2_version} {date} {time}.xlsx")
     
     return comparison_tup_file
 
@@ -21,7 +30,7 @@ def tup_comparison(wb_dir1, wb_dir2, out_dir):
 
     sheetnames = workbook.sheet_names
 
-    no_no_sheets = ["SAR Workbook Friendly ANT 0", "SAR Workbook Friendly ANT 1", "SAR Workbook Friendly ANT 2", "SAR Workbook Friendly ANT 5", "SAR Workbook Friendly ANT 6", "SAR Workbook Friendly ANT 7"]
+    no_no_sheets = ["Readme", "SAR Workbook Friendly ANT 0", "SAR Workbook Friendly ANT 1", "SAR Workbook Friendly ANT 2", "SAR Workbook Friendly ANT 5", "SAR Workbook Friendly ANT 6", "SAR Workbook Friendly ANT 7"]
 
     tup_data_sheets = [n for i, n in enumerate(sheetnames) if n not in no_no_sheets]
 
@@ -58,7 +67,7 @@ if __name__ == "__main__":
     tup_workbook_2 = filedialog.askopenfilename(title = "TuP 2", filetypes = (("Excel File", "*.xlsx*"),))
     comparison_tup_dir = filedialog.askdirectory(title = "Output Directory")
     
-    output_tup_filename = filename_name_dir(comparison_tup_dir)
+    output_tup_filename = filename_name_dir(tup_workbook_1, tup_workbook_2, comparison_tup_dir)
     
     tup_comparison(tup_workbook_1, tup_workbook_2, output_tup_filename)
     
